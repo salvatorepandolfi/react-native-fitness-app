@@ -1,9 +1,21 @@
 import React, {Component} from "react"
-import {View} from 'react-native'
-import {getMetricMetaInfo} from "../utils/helpers";
+import {View, Text, TouchableOpacity} from 'react-native'
+import {getMetricMetaInfo, timeToString} from "../utils/helpers";
 import UdaciSlider from "./UdaciSlider";
 import UdaciStepper from "./UdaciStepper";
 import DateHeader from "./DateHeader";
+import {Ionicons} from '@expo/vector-icons'
+import TextButton from "./TextButton";
+
+function SubmitBtn({onPress}) {
+    return (
+        <TouchableOpacity
+            onPress={onPress}
+        >
+            <Text>SUBMIT</Text>
+        </TouchableOpacity>
+    )
+}
 
 export default class AddEntry extends Component {
     state = {
@@ -39,9 +51,45 @@ export default class AddEntry extends Component {
             [metric]: value
         }))
     }
+    submit = () => {
+        const key = timeToString()
+        const entry = this.state
+        //update redux
+
+        this.setState(() => ({
+            run: 0,
+            bike: 0,
+            swim: 0,
+            sleep: 0,
+            eat: 0
+        }))
+        //navigate to home
+        //save to 'DB'
+        //Clear local notification
+    }
+    reset = () => {
+        const key = timeToString()
+        // Update Redux
+        // Route to home
+        // Update DB
+    }
 
     render() {
         const metaInfo = getMetricMetaInfo()
+        if (this.props.alreadylogged) {
+            return (
+                <View>
+                    <Ionicons
+                        name='ios-happy-outline'
+                        size={100}
+                    />
+                    <Text>You already logged yout information for today</Text>
+                    <TextButton onPress={this.reset}>
+                        Reset
+                    </TextButton>
+                </View>
+            )
+        }
         return (
             <View>
                 <DateHeader date={new Date().toLocaleDateString()}/>
@@ -67,6 +115,7 @@ export default class AddEntry extends Component {
                         </View>
                     )
                 })}
+                <SubmitBtn onPress={this.submit}/>
             </View>
         )
     }
