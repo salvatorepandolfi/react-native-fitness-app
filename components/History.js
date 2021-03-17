@@ -8,8 +8,13 @@ import {Agenda} from 'react-native-calendars'
 import DateHeader from "./DateHeader";
 import {blue, gray, white} from "../utils/colors";
 import MetricCard from "./MetricCard";
+import AppLoading from 'expo-app-loading';
+
 
 class History extends Component {
+    state ={
+        ready: false
+    }
     componentDidMount() {
         const {dispatch} = this.props
         fetchCalendarResults()
@@ -21,6 +26,7 @@ class History extends Component {
                     }))
                 }
             })
+            .then(()=> this.setState(()=>({ready:true})))
 
     }
 
@@ -53,7 +59,11 @@ class History extends Component {
     }
 
     render() {
+        const {ready} = this.state
         const {entries} = this.props
+        if(ready===false){
+            return (<AppLoading/>)
+        }
         return (
             <Agenda
                 items={entries}
