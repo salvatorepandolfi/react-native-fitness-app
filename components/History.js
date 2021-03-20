@@ -12,9 +12,10 @@ import AppLoading from 'expo-app-loading';
 
 
 class History extends Component {
-    state ={
+    state = {
         ready: false
     }
+
     componentDidMount() {
         const {dispatch} = this.props
         fetchCalendarResults()
@@ -26,25 +27,9 @@ class History extends Component {
                     }))
                 }
             })
-            .then(()=> this.setState(()=>({ready:true})))
+            .then(() => this.setState(() => ({ready: true})))
 
     }
-
-    renderItem = ({today, ...metrics}, formattedDate, key) => (
-        <View style={styles.item}>
-            {today
-                ? <View>
-                    <DateHeader date={formattedDate}/>
-                    <Text style={styles.noDataText}>
-                        {today}
-                    </Text>
-                </View>
-                : <TouchableOpacity onPress={() => console.log('pressed')}>
-                    <MetricCard metrics={metrics}/>
-                </TouchableOpacity>
-            }
-        </View>
-    )
 
     renderEmptyDate(formattedDate) {
         return (
@@ -58,10 +43,35 @@ class History extends Component {
 
     }
 
+    renderItem = ({key, metrics}) => {
+
+        const [curMetrics] =metrics
+        const {today}= curMetrics
+        return (
+            <View style={styles.item}>
+                {today
+                    ? <View>
+                        {/*<DateHeader date={formattedDate}/>*/}
+                        <Text style={styles.noDataText}>
+                            {today}
+                        </Text>
+                    </View>
+                    : <TouchableOpacity onPress={() => this.props.navigation.navigate(
+                        'EntryDetail',
+                        {entryId: key}
+                    )}>
+                        <MetricCard metrics={curMetrics}/>
+                    </TouchableOpacity>
+                }
+            </View>
+        )
+    }
+
     render() {
         const {ready} = this.state
         const {entries} = this.props
-        if(ready===false){
+        // console.log(entries)
+        if (ready === false) {
             return (<AppLoading/>)
         }
         return (
@@ -99,7 +109,13 @@ const styles = StyleSheet.create({
 })
 
 function mapStateToProps(entries) {
-    return {entries}
+    const formattedEntries = {}
+    Object.keys(entries).forEach(key => (formattedEntries[key] = [{
+            key,
+            metrics: entries[key]
+        }])
+    )
+    return {entries: formattedEntries}
 }
 
 export default connect(mapStateToProps)(History)
