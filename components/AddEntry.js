@@ -1,6 +1,10 @@
 import React, {Component} from "react"
 import {View, Text, TouchableOpacity, Platform, StyleSheet} from 'react-native'
-import {getMetricMetaInfo, timeToString, getDailyReminderValue} from "../utils/helpers"
+import {
+    getMetricMetaInfo, timeToString, getDailyReminderValue,
+    clearLocalNotification,
+    setLocalNotification
+} from "../utils/helpers"
 import UdaciSlider from "./UdaciSlider"
 import UdaciStepper from "./UdaciStepper"
 import DateHeader from "./DateHeader"
@@ -73,6 +77,8 @@ class AddEntry extends Component {
         //navigate to home
         submitEntry({key, entry})
         //Clear local notification
+        clearLocalNotification()
+            .then(setLocalNotification)
     }
     reset = () => {
         const key = timeToString()
@@ -89,11 +95,11 @@ class AddEntry extends Component {
             return (
                 <View style={styles.center}>
                     <Ionicons
-                        name={Platform.OS==='ios'?'ios-happy-outline':'md-happy'}
+                        name={Platform.OS === 'ios' ? 'ios-happy-outline' : 'md-happy'}
                         size={100}
                     />
                     <Text>You already logged yout information for today</Text>
-                    <TextButton style={{padding:10}}onPress={this.reset}>
+                    <TextButton style={{padding: 10}} onPress={this.reset}>
                         Reset
                     </TextButton>
                 </View>
@@ -165,8 +171,8 @@ const styles = StyleSheet.create({
         fontSize: 22,
         textAlign: 'center'
     },
-    center:{
-        flex:1,
+    center: {
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 30,
@@ -178,7 +184,7 @@ function mapStateToProps(state) {
     const key = timeToString()
 
     return {
-        alreadyLogged: state[key] && state[key].length>0 && typeof state[key][0].today === 'undefined'
+        alreadyLogged: state[key] && state[key].length > 0 && typeof state[key][0].today === 'undefined'
     }
 }
 
