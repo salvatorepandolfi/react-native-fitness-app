@@ -45,8 +45,8 @@ class History extends Component {
 
     renderItem = ({key, metrics}) => {
 
-        const [curMetrics] =metrics
-        const {today}= curMetrics
+        const [curMetrics] = metrics
+        const {today} = curMetrics
         return (
             <View style={styles.item}>
                 {today
@@ -70,7 +70,6 @@ class History extends Component {
     render() {
         const {ready} = this.state
         const {entries} = this.props
-        // console.log(entries)
         if (ready === false) {
             return (<AppLoading/>)
         }
@@ -110,10 +109,13 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(entries) {
     const formattedEntries = {}
-    Object.keys(entries).forEach(key => (formattedEntries[key] = [{
-            key,
-            metrics: entries[key]
-        }])
+    Object.keys(entries).forEach(key => (
+        formattedEntries[key] =
+            entries[key] && entries[key].length > 0
+                ? [{
+                    key,
+                    metrics: entries[key]
+                }] : [])
     )
     return {entries: formattedEntries}
 }
