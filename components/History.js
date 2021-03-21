@@ -51,7 +51,7 @@ class History extends Component {
             <View style={styles.item}>
                 {today
                     ? <View>
-                        {/*<DateHeader date={formattedDate}/>*/}
+                        <DateHeader date={key}/>
                         <Text style={styles.noDataText}>
                             {today}
                         </Text>
@@ -60,7 +60,7 @@ class History extends Component {
                         'EntryDetail',
                         {entryId: key}
                     )}>
-                        <MetricCard metrics={curMetrics}/>
+                        <MetricCard metrics={curMetrics} date={key}/>
                     </TouchableOpacity>
                 }
             </View>
